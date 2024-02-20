@@ -4424,7 +4424,6 @@ func TestMonitorJsz(t *testing.T) {
 				t.Fatalf("expected streams to be returned by %s but got %v", url, info)
 			}
 			if len(info.AccountDetails[0].Streams[0].State.Subjects) == 0 {
-				fmt.Printf("%+v\n", info.AccountDetails[0].Streams[0].State)
 				t.Fatalf("expected stream state to be detailed by %s but got %v", url, info)
 			}
 			if len(info.AccountDetails[0].Streams[0].Consumer) != 0 {
