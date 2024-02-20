@@ -2718,16 +2718,16 @@ func (s *Server) accountInfo(accName string) (*AccountInfo, error) {
 
 // JSzOptions are options passed to Jsz
 type JSzOptions struct {
-	Account             string `json:"account,omitempty"`
-	Accounts            bool   `json:"accounts,omitempty"`
-	Streams             bool   `json:"streams,omitempty"`
-	StreamStateDetailed bool   `json:"stream_state_detailed,omitempty"`
-	Consumer            bool   `json:"consumer,omitempty"`
-	Config              bool   `json:"config,omitempty"`
-	LeaderOnly          bool   `json:"leader_only,omitempty"`
-	Offset              int    `json:"offset,omitempty"`
-	Limit               int    `json:"limit,omitempty"`
-	RaftGroups          bool   `json:"raft,omitempty"`
+	Account                string `json:"account,omitempty"`
+	Accounts               bool   `json:"accounts,omitempty"`
+	Streams                bool   `json:"streams,omitempty"`
+	StreamSubjectsDetailed bool   `json:"stream_subjects_detailed,omitempty"`
+	Consumer               bool   `json:"consumer,omitempty"`
+	Config                 bool   `json:"config,omitempty"`
+	LeaderOnly             bool   `json:"leader_only,omitempty"`
+	Offset                 int    `json:"offset,omitempty"`
+	Limit                  int    `json:"limit,omitempty"`
+	RaftGroups             bool   `json:"raft,omitempty"`
 }
 
 // HealthzOptions are options passed to Healthz
@@ -2801,7 +2801,7 @@ type JSInfo struct {
 	AccountDetails []*AccountDetail `json:"account_details,omitempty"`
 }
 
-func (s *Server) accountDetail(jsa *jsAccount, optStreams, optStreamStateDetailed, optConsumers, optCfg, optRaft bool) *AccountDetail {
+func (s *Server) accountDetail(jsa *jsAccount, optStreams, optStreamSubjectsDetailed, optConsumers, optCfg, optRaft bool) *AccountDetail {
 	jsa.mu.RLock()
 	acc := jsa.account
 	name := acc.GetName()
@@ -2849,7 +2849,7 @@ func (s *Server) accountDetail(jsa *jsAccount, optStreams, optStreamStateDetaile
 			}
 
 			var state StreamState
-			if optStreamStateDetailed {
+			if optStreamSubjectsDetailed {
 				state = stream.stateWithDetail(true)
 			} else {
 				state = stream.state()
@@ -2910,7 +2910,7 @@ func (s *Server) JszAccount(opts *JSzOptions) (*AccountDetail, error) {
 	if !ok {
 		return nil, fmt.Errorf("account %q not jetstream enabled", acc)
 	}
-	return s.accountDetail(jsa, opts.Streams, opts.StreamStateDetailed, opts.Consumer, opts.Config, opts.RaftGroups), nil
+	return s.accountDetail(jsa, opts.Streams, opts.StreamSubjectsDetailed, opts.Consumer, opts.Config, opts.RaftGroups), nil
 }
 
 // helper to get cluster info from node via dummy group
@@ -3037,7 +3037,7 @@ func (s *Server) Jsz(opts *JSzOptions) (*JSInfo, error) {
 	}
 	// if wanted, obtain accounts/streams/consumer
 	for _, jsa := range accounts {
-		detail := s.accountDetail(jsa, opts.Streams, opts.StreamStateDetailed, opts.Consumer, opts.Config, opts.RaftGroups)
+		detail := s.accountDetail(jsa, opts.Streams, opts.StreamSubjectsDetailed, opts.Consumer, opts.Config, opts.RaftGroups)
 		jsi.AccountDetails = append(jsi.AccountDetails, detail)
 	}
 	return jsi, nil
