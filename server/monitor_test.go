@@ -4548,6 +4548,25 @@ func TestMonitorJsz(t *testing.T) {
 			}
 		}
 	})
+	
+	t.Run("stream state detailed", func(t *testing.T) {
+		for _, url := range []string{monUrl1, monUrl2} {
+			info := readJsInfo(url + "?acc=ACC&streams=true&stream_state_detailed=true")
+			if len(info.AccountDetails) != 1 {
+				t.Fatalf("expected account ACC to be returned by %s but got %v", url, info)
+			}
+			if len(info.AccountDetails[0].Streams) == 0 {
+				t.Fatalf("expected streams to be returned by %s but got %v", url, info)
+			}
+			if len(info.AccountDetails[0].Streams[0].State.Subjects) == 0 {
+				fmt.Printf("%+v\n", info.AccountDetails[0].Streams[0].State)
+				t.Fatalf("expected stream state to be detailed by %s but got %v", url, info)
+			}
+			if len(info.AccountDetails[0].Streams[0].Consumer) != 0 {
+				t.Fatalf("expected no consumers to be returned by %s but got %v", url, info)
+			}
+		}
+	})
 }
 
 func TestMonitorReloadTLSConfig(t *testing.T) {
