@@ -3056,7 +3056,7 @@ func (s *Server) HandleJsz(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	streamStateDetailed, err := decodeBool(w, r, "stream_state_detailed")
+	streamSubjectsDetailed, err := decodeBool(w, r, "stream_subjects_detailed")
 	if err != nil {
 		return
 	}
@@ -3089,7 +3089,7 @@ func (s *Server) HandleJsz(w http.ResponseWriter, r *http.Request) {
 		r.URL.Query().Get("acc"),
 		accounts,
 		streams,
-		streamStateDetailed,
+		streamSubjectsDetailed,
 		consumers,
 		config,
 		leader,
