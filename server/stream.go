@@ -5460,7 +5460,9 @@ func (mset *stream) stateWithDetail(details bool) StreamState {
 
 	// Currently rely on store for details.
 	if details {
-		return store.State()
+		var state = store.State()
+		state.Subjects = store.SubjectsTotals(">")
+		return state
 	}
 	// Here we do the fast version.
 	var state StreamState
