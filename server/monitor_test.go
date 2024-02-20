@@ -4414,6 +4414,24 @@ func TestMonitorJsz(t *testing.T) {
 			}
 		}
 	})
+	t.Run("stream state detailed", func(t *testing.T) {
+		for _, url := range []string{monUrl1, monUrl2} {
+			info := readJsInfo(url + "?acc=ACC&streams=true&stream_state_detailed=true")
+			if len(info.AccountDetails) != 1 {
+				t.Fatalf("expected account ACC to be returned by %s but got %v", url, info)
+			}
+			if len(info.AccountDetails[0].Streams) == 0 {
+				t.Fatalf("expected streams to be returned by %s but got %v", url, info)
+			}
+			if len(info.AccountDetails[0].Streams[0].State.Subjects) == 0 {
+				fmt.Printf("%+v\n", info.AccountDetails[0].Streams[0].State)
+				t.Fatalf("expected stream state to be detailed by %s but got %v", url, info)
+			}
+			if len(info.AccountDetails[0].Streams[0].Consumer) != 0 {
+				t.Fatalf("expected no consumers to be returned by %s but got %v", url, info)
+			}
+		}
+	})
 	t.Run("consumers", func(t *testing.T) {
 		for _, url := range []string{monUrl1, monUrl2} {
 			info := readJsInfo(url + "?acc=ACC&consumers=true")
@@ -4545,25 +4563,6 @@ func TestMonitorJsz(t *testing.T) {
 			}
 			if len(crgroup.RaftGroup) == 0 {
 				t.Fatal("expected consumer raft group info to be included")
-			}
-		}
-	})
-	
-	t.Run("stream state detailed", func(t *testing.T) {
-		for _, url := range []string{monUrl1, monUrl2} {
-			info := readJsInfo(url + "?acc=ACC&streams=true&stream_state_detailed=true")
-			if len(info.AccountDetails) != 1 {
-				t.Fatalf("expected account ACC to be returned by %s but got %v", url, info)
-			}
-			if len(info.AccountDetails[0].Streams) == 0 {
-				t.Fatalf("expected streams to be returned by %s but got %v", url, info)
-			}
-			if len(info.AccountDetails[0].Streams[0].State.Subjects) == 0 {
-				fmt.Printf("%+v\n", info.AccountDetails[0].Streams[0].State)
-				t.Fatalf("expected stream state to be detailed by %s but got %v", url, info)
-			}
-			if len(info.AccountDetails[0].Streams[0].Consumer) != 0 {
-				t.Fatalf("expected no consumers to be returned by %s but got %v", url, info)
 			}
 		}
 	})
